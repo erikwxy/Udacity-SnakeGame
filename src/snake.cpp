@@ -77,3 +77,40 @@ bool Snake::SnakeCell(int x, int y) {
   }
   return false;
 }
+
+void AutoSnake::UpdateHead() {
+  std::random_device dev;
+  std::mt19937 eng(dev());
+  std::uniform_int_distribution<> distribution(0, 5);   
+  int auto_direction = distribution(eng);
+  
+  switch (auto_direction) {
+    case 0:
+      head_y -= speed;
+      break;
+
+    case 1:
+      head_x -= speed;
+      break;
+
+    case 2:
+      head_y += speed;
+      break;
+
+    case 3:
+      head_x += speed;
+      break;
+
+    case 4:
+      head_y += speed;
+      break;
+
+    case 5:
+      head_x += speed;
+      break;
+  }
+
+  // Wrap the Snake around to the beginning if going off of the screen.
+  head_x = fmod(head_x + grid_width, grid_width);
+  head_y = fmod(head_y + grid_height, grid_height);
+}

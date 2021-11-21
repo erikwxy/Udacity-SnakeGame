@@ -1,12 +1,24 @@
 # CPPND: Capstone Snake Game Example
 
-This is a starter repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
+This is a student repo for the Capstone project in the [Udacity C++ Nanodegree Program](https://www.udacity.com/course/c-plus-plus-nanodegree--nd213). The code for this repo was inspired by [this](https://codereview.stackexchange.com/questions/212296/snake-game-in-c-with-sdl) excellent StackOverflow post and set of responses.
 
-<img src="snake_game.gif"/>
+<image src="snake_game.gif">
 
-The Capstone Project gives you a chance to integrate what you've learned throughout this program. This project will become an important part of your portfolio to share with current and future colleagues and employers.
+In the student work, a lot of functions have been added to increase the difficulties of this game. 
+* There is not only food for snake, but also bombs. When the snake meets bombs, it will die. The number of boms is increased with the score. 
+* There is an auto snake, which can both eat food and bombs to increase its body. When the player snake meets auto snake, it will die. 
 
-In this project, you can build your own C++ application or extend this Snake game, following the principles you have learned throughout this Nanodegree Program. This project will demonstrate that you can independently create applications using a wide range of C++ features.
+Rubrict point:
+* The project reads data from a file and process the data, or the program writes data to a file. 
+  In render.h, food and bombs are loaded from an image, and render on the GUI. 
+* Classes follow an appropriate inheritance hierarchy.
+  In snake.h, the auto snake class is inherited from snake class. Override functions are specified.
+* The project uses destructors appropriately.
+  In render.cpp, the surfaces and textures are destructed in destructor. 
+* The project uses multiple threads in the execution.
+  In game.cpp, the update of player snake and auto snake are running in different threads. 
+* A mutex or lock is used in the project.
+  In game.cpp, in the updates of snakes, lock_guard is used to avoid data race. 
 
 ## Dependencies for Running Locally
 * cmake >= 3.7
@@ -22,6 +34,8 @@ In this project, you can build your own C++ application or extend this Snake gam
   * Linux: gcc / g++ is installed by default on most Linux distros
   * Mac: same deal as make - [install Xcode command line tools](https://developer.apple.com/xcode/features/)
   * Windows: recommend using [MinGW](http://www.mingw.org/)
+* SDL2_image >= 2.0
+  * Linux: apt-get install libsdl2-image-dev
 
 ## Basic Build Instructions
 

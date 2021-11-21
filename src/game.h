@@ -2,6 +2,8 @@
 #define GAME_H
 
 #include <random>
+#include <vector>
+#include <mutex>
 #include "SDL.h"
 #include "controller.h"
 #include "renderer.h"
@@ -17,7 +19,9 @@ class Game {
 
  private:
   Snake snake;
+  AutoSnake auto_snake;
   SDL_Point food;
+  std::vector<SDL_Point> bombs;
 
   std::random_device dev;
   std::mt19937 engine;
@@ -25,9 +29,12 @@ class Game {
   std::uniform_int_distribution<int> random_h;
 
   int score{0};
+  std::mutex _mtx;
 
   void PlaceFood();
+  void PlaceBombs();
   void Update();
+  void UpdateAuto();
 };
 
 #endif

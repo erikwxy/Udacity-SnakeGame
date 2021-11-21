@@ -31,14 +31,21 @@ Renderer::Renderer(const std::size_t screen_width,
     std::cerr << "Renderer could not be created.\n";
     std::cerr << "SDL_Error: " << SDL_GetError() << "\n";
   }
+  food_tex = SDL_CreateTextureFromSurface(sdl_renderer, food_sur);
+  bomb_tex = SDL_CreateTextureFromSurface(sdl_renderer, bomb_sur);
 }
 
 Renderer::~Renderer() {
+  SDL_DestroyTexture(food_tex);
+  SDL_DestroyTexture(bomb_tex);
+  SDL_FreeSurface(food_sur);
+  SDL_FreeSurface(bomb_sur);
   SDL_DestroyWindow(sdl_window);
   SDL_Quit();
 }
 
-void Renderer::Render(Snake const snake, SDL_Point const &food) {
+void Renderer::Render(Snake const snake, SDL_Point const &food, std::vector<SDL_Point> const &bombs, AutoSnake const auto_snake) {
+
   SDL_Rect block;
   block.w = screen_width / grid_width;
   block.h = screen_height / grid_height;
@@ -47,11 +54,19 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   SDL_SetRenderDrawColor(sdl_renderer, 0x1E, 0x1E, 0x1E, 0xFF);
   SDL_RenderClear(sdl_renderer);
 
-  // Render food
-  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xCC, 0x00, 0xFF);
+  // Render food  
   block.x = food.x * block.w;
   block.y = food.y * block.h;
-  SDL_RenderFillRect(sdl_renderer, &block);
+  SDL_RenderCopy(sdl_renderer, food_tex, NULL, &block);
+
+  // Render bomb
+  for (auto &bomb: bombs){
+    
+    block.x = bomb.x * block.w;
+    block.y = bomb.y * block.h;
+    SDL_RenderCopy(sdl_renderer, bomb_tex, NULL, &block);
+  }  
+  
 
   // Render snake's body
   SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -59,6 +74,7 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
     block.x = point.x * block.w;
     block.y = point.y * block.h;
     SDL_RenderFillRect(sdl_renderer, &block);
+
   }
 
   // Render snake's head
@@ -71,8 +87,24 @@ void Renderer::Render(Snake const snake, SDL_Point const &food) {
   }
   SDL_RenderFillRect(sdl_renderer, &block);
 
+  // Render auto snake's body
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+  for (SDL_Point const &point : auto_snake.body) {
+    block.x = point.x * block.w;
+    block.y = point.y * block.h;
+    SDL_RenderFillRect(sdl_renderer, &block);
+
+  }
+
+  // Render auto snake's head
+  block.x = static_cast<int>(auto_snake.head_x) * block.w;
+  block.y = static_cast<int>(auto_snake.head_y) * block.h;
+  SDL_SetRenderDrawColor(sdl_renderer, 0xFF, 0x00, 0x00, 0xFF);
+  SDL_RenderFillRect(sdl_renderer, &block);
+
   // Update Screen
   SDL_RenderPresent(sdl_renderer);
+
 }
 
 void Renderer::UpdateWindowTitle(int score, int fps) {
